@@ -16,4 +16,4 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy files with rsync
-        run: rsync -avP --exclude '.git' --exclude '.github' --exclude 'data' . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/octave-prediction
+        run: rsync -avP --delete --exclude '.git' --exclude '.github' --exclude 'data' . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/octave-prediction
