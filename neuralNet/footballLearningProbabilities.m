@@ -4,13 +4,17 @@ addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to funct
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
 
 
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/31Jan22/train.csv"));
-#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/31Jan22/nolineups_train.csv"));
-X = trainingSet(:, 9:end);
-probabilityOfResults = trainingSet(:, 6:6);
-y = trainingSet(:, 8:8) .+ 1; # Java stores Home win as 0. Add 1 to all results.
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/train.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/nolineups_train.csv"));
+X = trainingSet(:, 17:end);
+#X = [ones(size(X,1),1), X];
+probabilityOfResults = trainingSet(:, 14:14);
+#X = [trainingSet(:, 11:11) X]; #Using 538 features.
+y = trainingSet(:, 16:16) .+ 1; # Java stores Home win as 0. Add 1 to all results.
+simulatedProbs = trainingSet(:, 8:10);
+simulatedProbs = normaliseRowsToSumTo1(simulatedProbs);
+scores = trainingSet(:, 4:5);
 trainingSetSize = size(trainingSet,1)
-scores = trainingSet(:, 1:2);
 
 %
 % Initialising theta values
@@ -26,7 +30,7 @@ initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
 
 
 %Start training
-iterations = 100;
+iterations = 20;
 options = optimset('MaxIter', iterations);
 lambda = 40;
 
@@ -51,26 +55,32 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
                  num_labels, (hidden_layer_size + 1));
                  
                  
-rowsWithProbabilityOf1 = trainingSet(trainingSet(:,6:6)==1,:);
-rowsWithProb1X = rowsWithProbabilityOf1(:,9:end);
-rowsWithProb1Y = rowsWithProbabilityOf1(:, 8:8) .+ 1;
-[fullPredictions max] = predictOneVsAll(all_theta, rowsWithProb1X);
-fprintf('\nTraining Set Accuracy: %f\n', mean(double(max == rowsWithProb1Y)) * 100);
+rowsWithProbabilityOf1 = trainingSet(trainingSet(:,14:14)==1,:);
+rowsWithProb1X = rowsWithProbabilityOf1(:,17:end);
+#rowsWithProb1X = [rowsWithProbabilityOf1(:, 11:11) rowsWithProb1X];
+rowsWithProb1Y = rowsWithProbabilityOf1(:, 16:16) .+ 1;
+[fullPredictions maxIdx] = predict(Theta1, Theta2, rowsWithProb1X);
+fprintf('\nTraining Set Accuracy: %f\n', mean(double(maxIdx == rowsWithProb1Y)) * 100);
 
 
 
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/31Jan22/test.csv"));
-#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/31Jan22/nolineups_test.csv"));
-testX = testSet(:, 9:end);
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/test.csv"));
+#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/nolineups_test.csv"));
+testX = testSet(:, 17:end);
+#testX = [ones(size(testX,1),1), testX];
+#testX = [testSet(:, 11:11) testX];
 testBookieOdds = testSet(:, 1:3);
 testBookieProbs = 1./testBookieOdds;
-testY = testSet(:, 8:8) .+ 1;
+testY = testSet(:, 16:16) .+ 1;
 
 [pred2, probabilities] = predict(Theta1, Theta2, testX);
 fprintf('\nTest Set Accuracy: %f\n', mean(double(pred2 == testY)) * 100);
 
 %Normalise probabilities
 regProbs = regProbabilities(probabilities);
+
+testError = meanSquaredError(regProbs, testSet(:, 8:10));
+fprintf('\nTest set Mean Squared Error to simulated probabilities: %f\n', testError);
 
 highestBy = 0;
 betterThanBookies = 0.2;
@@ -79,8 +89,8 @@ fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, regProbs, testY);
 
 fprintf("\n\nKelly Criterion results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, ourProbs, testY, highestBy, betterThanBookies);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, regProbs, testY, highestBy, betterThanBookies);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookies);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, regProbs, testY, highestBy, betterThanBookies);
 totalReturn, totalSpent, profit, percentageProfit, numbBets

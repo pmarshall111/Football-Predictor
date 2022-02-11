@@ -7,15 +7,15 @@ addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to funct
 lambda = 160;
 fprintf("Training for lambda value of %f. Reading in data.", lambda)
 
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/31Jan22/train_final_model_score.csv"));
-#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/31Jan22/nolineups_train_final_model_score.csv"));
-X = trainingSet(:, 9:end);
-probabilityOfResults = trainingSet(:, 6:6);
-y = trainingSet(:, 8:8) .+ 1;
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/03Feb22/train_final_model_score.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/03Feb22/nolineups_train_final_model_score.csv"));
+X = trainingSet(:, 17:end);
+probabilityOfResults = trainingSet(:, 14:14);
+y = trainingSet(:, 16:16) .+ 1;
 scores = trainingSet(:, 4:5);
 
 fprintf('\nTraining One-vs-All Logistic Regression...')
-[all_theta] = oneVsAllWithProbabilitiesScore(X, y, 3, lambda, probabilityOfResults, scores);
+[all_theta] = oneVsAll(X, y, 3, lambda);
 
 args=argv();
 outputFile=args{1};
