@@ -4,17 +4,23 @@ addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to funct
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
 
 % load in training data.
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/23Jan22/toTrainOn_extended.csv"));
-#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/23Jan22/nolineups_toTrainOn_extended.csv"));
-X = trainingSet(:, 6:end);
-y = trainingSet(:, 5:5) .+ 1;
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
+X = trainingSet(:, 17:end);
+#X = [ones(size(X,1),1), X];
+probabilityOfResults = trainingSet(:, 14:14);
+#X = [trainingSet(:, 11:11) X]; #Using 538 features.
+y = trainingSet(:, 16:16) .+ 1; # Java stores Home win as 0. Add 1 to all results.
+simulatedProbs = trainingSet(:, 8:10);
+simulatedProbs = normaliseRowsToSumTo1(simulatedProbs);
+scores = trainingSet(:, 4:5);
+trainingSetSize = size(trainingSet,1)
 
 
 
 %
 % Initialising theta values
 hInput_layer_size = size(X, 2);
-hHidden_layer_size = hInput_layer_size * 2;
+hHidden_layer_size = hInput_layer_size;
 num_labels = 3;
 
 hInitial_Theta1 = randInitializeWeights(hInput_layer_size, hHidden_layer_size);
@@ -26,7 +32,7 @@ hInitial_Theta3 = randInitializeWeights(hHidden_layer_size, num_labels);
 hInitial_nn_params = [hInitial_Theta1(:) ; hInitial_Theta2(:); hInitial_Theta3(:)];
 
 %starting training
-iterations = 50;
+iterations = 200;
 options = optimset('MaxIter', iterations);
 lambda = 40;
 
@@ -62,13 +68,13 @@ fprintf('\nTraining Set Accuracy 2 hidden layers: %f\n', mean(double(hPred == y)
 
 
 % Test model on unseen games
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/23Jan22/lastSeason_extended.csv"));
-#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/23Jan22/nolineups_lastSeason_extended.csv"));
-testX = testSet(:, 6:end);
-testBookieOdds = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/23Jan22/oddslastSeason_extended.csv"));
-#testBookieOdds = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/23Jan22/oddsnolineups_lastSeason_extended.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
+testX = testSet(:, 17:end);
+#testX = [ones(size(testX,1),1), testX];
+#testX = [testSet(:, 11:11) testX];
+testBookieOdds = testSet(:, 1:3);
 testBookieProbs = 1./testBookieOdds;
-testY = testSet(:, 5:5) .+ 1;
+testY = testSet(:, 16:16) .+ 1;
 
 [pred2, probabilities] = predict2Hidden(hTheta1, hTheta2, hTheta3, testX);
 

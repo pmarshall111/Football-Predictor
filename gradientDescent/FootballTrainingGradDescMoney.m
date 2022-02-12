@@ -35,8 +35,8 @@ homeProb = simulatedProbs(:, 1:1);
 drawProb = simulatedProbs(:, 2:2);
 awayProb = simulatedProbs(:, 3:3);
 
-alpha = 0.01;
-num_iters = 10000;
+alpha = 0.1;
+num_iters = 100;
 thetaInit = zeros(1, size(X,2))'; #potentially could start my thetas with another model
 
 
@@ -67,26 +67,26 @@ endfor
 
 # First get to a good theta using original method
 
-#[homeTheta, home_J_history] = gradientDescentScores(X, homeProb, zeros(1, size(X,2))', alpha, num_iters, goalsAwayFromHomeWin);
-#[drawTheta, draw_J_history] = gradientDescentScores(X, drawProb, zeros(1, size(X,2))', alpha, num_iters, goalsAwayFromDraw);
-#[awayTheta, away_J_history] = gradientDescentScores(X, awayProb, zeros(1, size(X,2))', alpha, num_iters, goalsAwayFromAwayWin);
+[homeTheta, home_J_history] = gradientDescentScores(X, homeProb, zeros(1, size(X,2))', alpha, num_iters, goalsAwayFromHomeWin);
+[drawTheta, draw_J_history] = gradientDescentScores(X, drawProb, zeros(1, size(X,2))', alpha, num_iters, goalsAwayFromDraw);
+[awayTheta, away_J_history] = gradientDescentScores(X, awayProb, zeros(1, size(X,2))', alpha, num_iters, goalsAwayFromAwayWin);
 
 # Then train to optimise money
 
-homeTheta = ones(1, size(X,2))';
-drawTheta = ones(1, size(X,2))';
-awayTheta = ones(1, size(X,2))';
+#homeTheta = ones(1, size(X,2))';
+#drawTheta = ones(1, size(X,2))';
+#awayTheta = ones(1, size(X,2))';
 
-#[all_theta, J_history, lowest_theta] = gradientDescentMoney(X, y, homeTheta, drawTheta, awayTheta, alpha, num_iters);
+[all_theta, J_history, lowest_theta] = gradientDescentMoney(X, y, homeTheta, drawTheta, awayTheta, alpha, num_iters);
 #[all_theta, J_history, lowest_theta] = gradientDescentMoneyBookieOdds(X, y, homeTheta, drawTheta, awayTheta, bookieOdds, alpha, num_iters);
 
-[homeTheta, home_J_history] = gradientDescentMoneyBookieOdds(X, homeProb, zeros(1, size(X,2))', alpha, num_iters, bookieOdds, y);
-[drawTheta, draw_J_history] = gradientDescentMoneyBookieOdds(X, drawProb, zeros(1, size(X,2))', alpha, num_iters, bookieOdds, y);
-[awayTheta, away_J_history] = gradientDescentMoneyBookieOdds(X, awayProb, zeros(1, size(X,2))', alpha, num_iters, bookieOdds, y);
+#[homeTheta, home_J_history] = gradientDescentMoneyBookieOdds(X, homeProb, zeros(1, size(X,2))', alpha, num_iters, bookieOdds, y);
+#[drawTheta, draw_J_history] = gradientDescentMoneyBookieOdds(X, drawProb, zeros(1, size(X,2))', alpha, num_iters, bookieOdds, y);
+#[awayTheta, away_J_history] = gradientDescentMoneyBookieOdds(X, awayProb, zeros(1, size(X,2))', alpha, num_iters, bookieOdds, y);
 
-#homeTheta = all_theta(:,1:1);
-#drawTheta = all_theta(:,2:2);
-#awayTheta = all_theta(:,3:3);
+homeTheta = all_theta(:,1:1);
+drawTheta = all_theta(:,2:2);
+awayTheta = all_theta(:,3:3);
 
 # Plot costs of grad descent
 

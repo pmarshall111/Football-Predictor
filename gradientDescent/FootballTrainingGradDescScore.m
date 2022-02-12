@@ -35,7 +35,7 @@ drawProb = simulatedProbs(:, 2:2);
 awayProb = simulatedProbs(:, 3:3);
 
 alpha = 0.05;
-num_iters = 10000;
+num_iters = 1000;
 thetaInit = zeros(1, size(X,2))';
 
 

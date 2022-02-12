@@ -4,7 +4,7 @@
 addpath(fileparts(mfilename('fullpath'))); # adding path to functions in current directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to functions in parent directory
 
-lambda = 40;
+lambda = 4;
 fprintf("Training for lambda value of %f. Reading in data.", lambda)
 
 trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_train_final_model.csv"));

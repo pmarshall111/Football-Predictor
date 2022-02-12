@@ -48,7 +48,7 @@ function [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix
       endif
             
     else
-      resultsToBetOn = [resultsToBetOn; -1, 0, 0];
+      #resultsToBetOn = [resultsToBetOn; -1, 0, 0];
             
     endif
     

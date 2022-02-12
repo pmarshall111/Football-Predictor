@@ -6,7 +6,7 @@ addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding pa
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_train.csv"));
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_train.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
 X = trainingSet(:, 17:end);
 #X = [ones(size(X,1),1), X];
 probabilityOfResults = trainingSet(:, 14:14);
@@ -32,7 +32,7 @@ initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
 
 
 %Start training
-iterations = 100;
+iterations = 500;
 options = optimset('MaxIter', iterations);
 lambda = 40;
 
@@ -67,7 +67,7 @@ fprintf('\nTraining Set Accuracy: %f\n', mean(double(maxIdx == rowsWithProb1Y)) 
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_test.csv"));
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_test.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
 testX = testSet(:, 17:end);
 #testX = [ones(size(testX,1),1), testX];
 #testX = [testSet(:, 11:11) testX];

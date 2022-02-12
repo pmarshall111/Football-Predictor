@@ -76,19 +76,19 @@ endfor
 
 # Logistic Regression for a home win
 initial_theta = zeros(n + 1, 1);
-options = optimset('GradObj', 'on', 'MaxIter', 500);
+options = optimset('GradObj', 'on', 'MaxIter', 5000);
 [theta] = fmincg (@(t)(lrCostFunctionWithProbabilitiesScore(t, X, (y == 1), abs(goalsAwayFromHomeWin), probabilityOfResults, lambda)), initial_theta, options);      
 all_theta(1,:) = theta;
 
 # Logistic Regression for a draw
 initial_theta = zeros(n + 1, 1);
-options = optimset('GradObj', 'on', 'MaxIter', 500);
+options = optimset('GradObj', 'on', 'MaxIter', 5000);
 [theta] = fmincg (@(t)(lrCostFunctionWithProbabilitiesScore(t, X, (y == 2), abs(goalsAwayFromDraw), probabilityOfResults, lambda)), initial_theta, options);      
 all_theta(2,:) = theta;
 
 # Logistic Regression for an away win
 initial_theta = zeros(n + 1, 1);
-options = optimset('GradObj', 'on', 'MaxIter', 500);
+options = optimset('GradObj', 'on', 'MaxIter', 5000);
 [theta] = fmincg (@(t)(lrCostFunctionWithProbabilitiesScore(t, X, (y == 3), abs(goalsAwayFromAwayWin), probabilityOfResults, lambda)), initial_theta, options);      
 all_theta(3,:) = theta;
 

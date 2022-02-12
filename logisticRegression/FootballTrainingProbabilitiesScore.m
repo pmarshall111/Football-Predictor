@@ -8,7 +8,8 @@ fprintf("Training for lambda value of %f. Reading in data.\n", lambda)
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_train.csv"));
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_no_odds_train.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_no_odds_train.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebScores/nolineups_train.csv"));
 X = trainingSet(:, 17:end);
 #X = [trainingSet(:, 11:11) X];
 probabilityOfResults = trainingSet(:, 14:14);
@@ -19,7 +20,8 @@ trainingSetSize = size(trainingSet,1)
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_test.csv"));
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_no_odds_test.csv"));
+#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_no_odds_test.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebScores/nolineups_test.csv"));
 testX = testSet(:, 17:end);
 #testX = [testSet(:, 11:11) testX];
 testBookieOdds = testSet(:, 1:3);
@@ -61,7 +63,7 @@ fprintf('\nTest set Mean Squared Error to simulated probabilities: %f\n', testEr
 %% ================ Part 5: Work out money made ================
 
 highestBy = 0.1; %has to be this much more likely than second highest outcome.
-betterThanBookies = 0.15; %has to be this amount better than betters probabilities
+betterThanBookies = 0.2; %has to be this amount better than betters probabilities
 
 fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, ourProbs, testY);
@@ -98,5 +100,5 @@ fprintf("\n\nBetting on far apart games\n")
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 
 fprintf("\n\nBetting on games where our favourite is not the bookies favourite\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnDifferentFavourites(testBookieProbs, testRegularisedPredictions, testY);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnDifferentFavourites(testBookieProbs, ourProbs, testY);
 totalReturn, totalSpent, profit, percentageProfit, numbBets

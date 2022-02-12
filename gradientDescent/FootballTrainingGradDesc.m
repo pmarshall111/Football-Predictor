@@ -3,9 +3,9 @@ addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to funct
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
 
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/train.csv"));
-#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_train.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_train.csv"));
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_train.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_train.csv"));
 X = trainingSet(:, 17:end-1);
 X = [ones(size(X,1),1), X];
 #X = [trainingSet(:, 11:11) X]; #Using 538 features.
@@ -17,9 +17,9 @@ trainBookieProbs = 1 ./ trainingSet(:,1:3);
 trainingSetSize = size(trainingSet,1)
 
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/test.csv"));
-#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_test.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_test.csv"));
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_test.csv"));
+#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_test.csv"));
 testX = testSet(:, 17:end-1);
 testX = [ones(size(testX,1),1), testX];
 #testX = [testSet(:, 11:11) testX];
@@ -36,7 +36,7 @@ awayProb = simulatedProbs(:, 3:3);
 
 
 
-alpha = 0.05;
+alpha = 0.07;
 num_iters = 10000;
 thetaInit = zeros(1, size(X,2))';
 
