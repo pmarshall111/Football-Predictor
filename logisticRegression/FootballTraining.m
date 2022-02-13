@@ -6,7 +6,8 @@ lambda = 4; %hard coded lambda. We don't want function as that hides all the var
 fprintf("Training for lambda value of %f. Reading in data.\n", lambda)
 
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/train.csv"));
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_train.csv"));
 X = trainingSet(:, 17:end);
@@ -15,7 +16,8 @@ y = trainingSet(:, 16:16) .+ 1; # Java stores Home win as 0. Add 1 to all result
 trainingSetSize = size(trainingSet)
 
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/test.csv"));
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/test.csv"));
+#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_test.csv"));
 testX = testSet(:, 17:end);
@@ -65,33 +67,9 @@ Confusion_Matrix(testBookieProbs, ourProbs, testY);
 fprintf("\n\nKelly Criterion results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);
+
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
-fprintf("\n\nBetting on underdogs\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnUnderdogs(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on anything higher\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnAnythingHigher(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on anything lower\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnAnythingLower(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on close games\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnCloseGamesBTB(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on medium games\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnMediumGamesBTB(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on far apart games\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnMismatchesBTB(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on games where our favourite is not the bookies favourite\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnDifferentFavourites(testBookieProbs, ourProbs, testY);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);

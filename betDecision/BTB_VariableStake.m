@@ -35,7 +35,6 @@ function [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix
       stake = currMult*stake;
       totalSpent = totalSpent + stake;
       numbBets = numbBets + 1;
-      resultsToBetOn = [resultsToBetOn; highestIndex, stake, 1/bookieProb];
       
       
       # work out if we won
@@ -43,13 +42,15 @@ function [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix
         decimalOdds = 1/bookieProb;
         totalReturn = totalReturn + stake*decimalOdds;
         betMatrix(highestIndex, 1) = betMatrix(highestIndex, 1) + 1;
+        resultsToBetOn = [resultsToBetOn; highestIndex, stake, 1/bookieProb, stake*decimalOdds-stake];
       else
         betMatrix(highestIndex, 2) = betMatrix(highestIndex, 2) + 1;
+        resultsToBetOn = [resultsToBetOn; highestIndex, stake, 1/bookieProb, -stake];
       endif
-            
+      
     else
-      #resultsToBetOn = [resultsToBetOn; -1, 0, 0];
-            
+      resultsToBetOn = [resultsToBetOn; -1, 0, 0, 0];
+                  
     endif
     
   endfor

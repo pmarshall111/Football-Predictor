@@ -2,7 +2,7 @@ addpath(fileparts(mfilename('fullpath'))); # adding path to functions in current
 addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to functions in parent directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
 
-lambda = 4; %hard coded lambda. We don't want function as that hides all the variables we create within it's scope.
+lambda = 40; %hard coded lambda. We don't want function as that hides all the variables we create within it's scope.
 fprintf("Training for lambda value of %f. Reading in data.\n", lambda)
 
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/train.csv"));
@@ -69,36 +69,11 @@ fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, ourProbs, testY);
 
 fprintf("\n\nKelly Criterion results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, ourProbs, testY, highestBy, betterThanBookies);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);
+
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookies);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on underdogs\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnUnderdogs(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on anything higher\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnAnythingHigher(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on anything lower\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnAnythingLower(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on close games\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnCloseGamesBTB(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on medium games\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnMediumGamesBTB(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on far apart games\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnMismatchesBTB(testBookieProbs, ourProbs, testY, betterThanBookiesBy);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
-
-fprintf("\n\nBetting on games where our favourite is not the bookies favourite\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = betOnDifferentFavourites(testBookieProbs, ourProbs, testY);
-totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);
