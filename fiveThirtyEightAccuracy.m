@@ -1,7 +1,7 @@
 addpath(fileparts(mfilename('fullpath'))); # adding path to functions in current directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/betDecision")); # adding path to functions in betDecision directory
 
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/data/02Feb22/train_final_model.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/data/12FebBase538/train.csv"));
 bookieProbs = 1 ./ trainingSet(:, 1:3);
 fiveThirtyEightProbs = trainingSet(:, 11:13);
 y = trainingSet(:, 16:16) .+ 1;

@@ -107,12 +107,16 @@ fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, testRegularisedPredictions, testY);
 
 fprintf("\n\nKelly Criterion results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, testRegularisedPredictions, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);
 
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, testRegularisedPredictions, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);
 
+fprintf("\n\nKelly Criterion lay results\n")
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, testRegularisedPredictions, testY, highestBy, 0.05);
+totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);

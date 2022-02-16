@@ -1,7 +1,7 @@
 addpath(fileparts(mfilename('fullpath'))); # adding path to functions in current directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to functions in parent directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
-
+clear;
 lambda = 40; %hard coded lambda. We don't want function as that hides all the variables we create within it's scope.
 fprintf("Training for lambda value of %f. Reading in data.\n", lambda)
 
@@ -10,6 +10,7 @@ fprintf("Training for lambda value of %f. Reading in data.\n", lambda)
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_no_odds_train.csv"));
 trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebScores/nolineups_train.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebScores/train.csv"));
 X = trainingSet(:, 17:end);
 #X = [trainingSet(:, 11:11) X];
 probabilityOfResults = trainingSet(:, 14:14);
@@ -22,6 +23,7 @@ trainingSetSize = size(trainingSet,1)
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebSimMatchesByScore/nolineups_short_no_odds_test.csv"));
 testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebScores/nolineups_test.csv"));
+#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebScores/test.csv"));
 testX = testSet(:, 17:end);
 #testX = [testSet(:, 11:11) testX];
 testBookieOdds = testSet(:, 1:3);
@@ -63,7 +65,7 @@ fprintf('\nTest set Mean Squared Error to simulated probabilities: %f\n', testEr
 %% ================ Part 5: Work out money made ================
 
 highestBy = 0.1; %has to be this much more likely than second highest outcome.
-betterThanBookies = 0.2; %has to be this amount better than betters probabilities
+betterThanBookiesBy = 0.2; %has to be this amount better than betters probabilities
 
 fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, ourProbs, testY);
@@ -75,5 +77,10 @@ analyseBets(resultsToBetOn);
 
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
+totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);
+
+fprintf("\n\nKelly Criterion lay results\n")
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, ourProbs, testY, highestBy, 0.05);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);

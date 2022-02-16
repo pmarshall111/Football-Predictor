@@ -1,7 +1,7 @@
 addpath(fileparts(mfilename('fullpath'))); # adding path to functions in current directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to functions in parent directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
-
+clear;
 lambda = 4; %hard coded lambda. We don't want function as that hides all the variables we create within it's scope.
 fprintf("Training for lambda value of %f. Reading in data.\n", lambda)
 
@@ -71,5 +71,10 @@ analyseBets(resultsToBetOn);
 
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
+totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);
+
+fprintf("\n\nKelly Criterion lay results\n")
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, ourProbs, testY, highestBy, 0.01);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);

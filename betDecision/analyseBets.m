@@ -13,11 +13,17 @@ function analyseBets(resultsToBetOn)
   # Get avg of middle 50% of data
   idx25 = floor(l/4);
   idx75 = floor(3*l/4);
+  if idx25 == 0
+    idx25 = 1;
+  endif
   avgOfMiddle50Prec = mean(betsSorted(idx25:idx75,4:4))
   
   # Get avg of middle 75% of data
   idx12p5 = floor(l/8);
   idx87p5 = floor(7*l/8);
+  if idx12p5 == 0
+    idx12p5 = 1;
+  endif
   avgOfMiddle75Prec = mean(betsSorted(idx12p5:idx87p5,4:4))
   
   totalAvg = mean(betsSorted(:,4:4))
