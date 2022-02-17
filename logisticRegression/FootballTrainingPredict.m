@@ -32,6 +32,10 @@ resultsToBetOn = [resultsToBetOn(:,1:1)-notMinus1,resultsToBetOn(:,2:end)];
 notMinus1Lay = resultsToLayBetOn(:,1:1)!=-1;
 resultsToLayBetOn = [resultsToLayBetOn(:,1:1)-notMinus1Lay,resultsToLayBetOn(:,2:end)];
 
+# Remove last column (last column is used to count profit and loss for played games. As we're predicting, this column is not useful.
+resultsToBetOn = resultsToBetOn(:,1:3);
+resultsToLayBetOn = resultsToLayBetOn(:,1:3);
+
 # Add the game id to the predictions, as well as any recommendations for results
 outputMatrix = [gameIds, probabilities, resultsToBetOn, resultsToLayBetOn]
 dlmwrite(outputPath, outputMatrix, "delimiter", ",", "newline", "\n");
