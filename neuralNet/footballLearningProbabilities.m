@@ -2,9 +2,9 @@
 addpath(fileparts(mfilename('fullpath'))); # adding path to functions in current directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to functions in parent directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
+clear;
 
-
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/train.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/18FebScores/nolineups_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/nolineups_train.csv"));
 X = trainingSet(:, 17:end);
 #X = [ones(size(X,1),1), X];
@@ -30,9 +30,9 @@ initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
 
 
 %Start training
-iterations = 20;
+iterations = 100;
 options = optimset('MaxIter', iterations);
-lambda = 40;
+lambda = 32;
 
 fprintf("\n Iterations: %f. Lambda: %f\n", iterations, lambda);
 
@@ -64,7 +64,7 @@ fprintf('\nTraining Set Accuracy: %f\n', mean(double(maxIdx == rowsWithProb1Y)) 
 
 
 
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/test.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/18FebScores/nolineups_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/06Feb22Result/nolineups_test.csv"));
 testX = testSet(:, 17:end);
 #testX = [ones(size(testX,1),1), testX];
@@ -82,8 +82,8 @@ regProbs = regProbabilities(probabilities);
 testError = meanSquaredError(regProbs, testSet(:, 8:10));
 fprintf('\nTest set Mean Squared Error to simulated probabilities: %f\n', testError);
 
-highestBy = 0;
-betterThanBookies = 0.2;
+highestBy = 0.08;
+betterThanBookies = 0.18;
 
 fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, regProbs, testY);
@@ -91,6 +91,15 @@ Confusion_Matrix(testBookieProbs, regProbs, testY);
 fprintf("\n\nKelly Criterion results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, regProbs, testY, highestBy, betterThanBookies);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);
+plotBets(resultsToBetOn);
+
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, regProbs, testY, highestBy, betterThanBookies);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);
+
+fprintf("\n\nKelly Criterion lay results\n")
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, regProbs, testY, highestBy, 0.01);
+totalReturn, totalSpent, profit, percentageProfit, numbBets
+analyseBets(resultsToBetOn);

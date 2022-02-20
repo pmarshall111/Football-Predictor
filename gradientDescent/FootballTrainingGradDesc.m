@@ -4,7 +4,7 @@ addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding pa
 
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/train.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/19FebBase/train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_train.csv"));
 X = trainingSet(:, 17:end-1);
@@ -19,7 +19,7 @@ trainingSetSize = size(trainingSet,1)
 
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/test.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/19FebBase/test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_test.csv"));
 testX = testSet(:, 17:end-1);
@@ -38,8 +38,8 @@ awayProb = simulatedProbs(:, 3:3);
 
 
 
-alpha = 0.05;
-num_iters = 10000;
+alpha = 0.02;
+num_iters = 100000;
 thetaInit = zeros(1, size(X,2))';
 
 [homeTheta, home_J_history] = gradientDescent(X, homeProb, zeros(1, size(X,2))', alpha, num_iters);
@@ -101,7 +101,7 @@ fprintf('\nTest set Mean Squared Error to simulated probabilities: %f\n', testEr
 %% ================ Part 5: Work out money made ================
 
 highestBy = 0.1; %has to be this much more likely than second highest outcome.
-betterThanBookiesBy = 0.2; %has to be this amount better than betters probabilities
+betterThanBookiesBy = 0.18; %has to be this amount better than betters probabilities
 
 fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, testRegularisedPredictions, testY);
@@ -117,6 +117,6 @@ totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);
 
 fprintf("\n\nKelly Criterion lay results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, testRegularisedPredictions, testY, highestBy, 0.05);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, testRegularisedPredictions, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);

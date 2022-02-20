@@ -7,7 +7,7 @@ clear;
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/test.csv"));
+trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/18FebBase/nolineups_train.csv"));
 
 X = trainingSet(:, 17:end);
 #X = [ones(size(X,1),1), X];
@@ -36,7 +36,7 @@ initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
 %Start training
 iterations = 500;
 options = optimset('MaxIter', iterations);
-lambda = 4;
+lambda = 32;
 
 fprintf("\n Iterations: %f. Lambda: %f\n", iterations, lambda);
 
@@ -64,13 +64,12 @@ rowsWithProb1Y = rowsWithProbabilityOf1(:, 16:16) .+ 1;
 [maxIdx maxVal] = predict(Theta1, Theta2, rowsWithProb1X);
 fprintf('\nTraining Set Accuracy: %f\n', mean(double(maxIdx == rowsWithProb1Y)) * 100);
 
-
 % Test model on unseen games
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/test.csv"));
+testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/18FebBase/nolineups_test.csv"));
 
 testX = testSet(:, 17:end);
 #testX = [ones(size(testX,1),1), testX];
@@ -87,14 +86,15 @@ fprintf('\nBookie Accuracy: %f\n', mean(double(maxIdx == testY)) * 100);
 fprintf('\nTest Set Accuracy: %f\n', mean(double(pred2 == testY)) * 100);
 
 %Normalise probabilities
-#regProbs = regProbabilities(probabilities);
-regProbs = convertLogitsToProbability(probabilities);
+regProbs = regProbabilities(probabilities);
+#regProbs = convertLogitsToProbability(probabilities);
 
 testError = meanSquaredError(regProbs, testSet(:, 8:10));
 fprintf('\nTest set Mean Squared Error to simulated probabilities: %f\n', testError);
+fprintf('\nTest set Brier Score: %f\n', brierScore(regProbs, testY));
 
-highestBy = 0.1;
-betterThanBookiesBy = 0.2;
+highestBy = 0.08;
+betterThanBookiesBy = 0.15;
 
 fprintf("\n\Confusion Matrix showing distribution of correctly picked bets\n")
 Confusion_Matrix(testBookieProbs, regProbs, testY);
@@ -103,6 +103,7 @@ fprintf("\n\nKelly Criterion results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, regProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);
+plotBets(resultsToBetOn);
 
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, regProbs, testY, highestBy, betterThanBookiesBy);
@@ -110,6 +111,6 @@ totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);
 
 fprintf("\n\nKelly Criterion lay results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, regProbs, testY, highestBy, 0.05);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, regProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);

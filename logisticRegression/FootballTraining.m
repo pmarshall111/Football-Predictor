@@ -2,12 +2,14 @@ addpath(fileparts(mfilename('fullpath'))); # adding path to functions in current
 addpath(strcat(fileparts(mfilename('fullpath')),"/../")); # adding path to functions in parent directory
 addpath(strcat(fileparts(mfilename('fullpath')),"/../betDecision")); # adding path to functions in betDecision directory
 clear;
-lambda = 4; %hard coded lambda. We don't want function as that hides all the variables we create within it's scope.
+lambda = 40; %hard coded lambda. We don't want function as that hides all the variables we create within it's scope.
 fprintf("Training for lambda value of %f. Reading in data.\n", lambda)
 
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_train.csv"));
-trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/train.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/train.csv"));
+#trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/19FebBase/nolineups_train.csv"));
+trainingSet = csvread("/home/peter/PycharmProjects/pythonProject/data/understat/nolineups_train.csv");
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_train.csv"));
 #trainingSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_train.csv"));
 X = trainingSet(:, 17:end);
@@ -16,7 +18,9 @@ y = trainingSet(:, 16:16) .+ 1; # Java stores Home win as 0. Add 1 to all result
 trainingSetSize = size(trainingSet)
 
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/test.csv"));
-testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/test.csv"));
+#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/13FebBase/test.csv"));
+#testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/19FebBase/nolineups_test.csv"));
+testSet = csvread("/home/peter/PycharmProjects/pythonProject/data/understat/nolineups_test.csv");
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/12FebBase/nolineups_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_test.csv"));
 #testSet = csvread(strcat(fileparts(mfilename('fullpath')), "/../data/08FebBase/nolineups_short_no_odds_test.csv"));
@@ -42,6 +46,7 @@ fprintf('\nTraining Set Accuracy: %f\n', mean(double(maxIdx == y)) * 100);
 %% ================ Part 4: Predict for test set ================
 
 bookieProbs = 1 ./ testSet(:, 1:3);
+#bookieProbs = normaliseRowsToSumTo1(bookieProbs);
 [maxProb, maxIdx] = max(bookieProbs, [], 2);
 fprintf('\nBookie Accuracy: %f\n', mean(double(maxIdx == testY)) * 100);
 
@@ -54,7 +59,7 @@ fprintf('\nTest Set Accuracy: %f\n', mean(double(testMax == testY)) * 100);
 ourProbs = convertLogitsToProbability(testFullPredictions);
 testError = meanSquaredError(ourProbs, testSet(:, 8:10));
 fprintf('\nTest set Mean Squared Error to simulated probabilities: %f\n', testError);
-
+fprintf('\nTest set Brier Score: %f\n', brierScore(ourProbs, testY));
 %% ================ Part 5: Work out money made ================
 
 highestBy = 0.1; %has to be this much more likely than second highest outcome.
@@ -68,6 +73,7 @@ fprintf("\n\nKelly Criterion results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterion(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);
+plotBets(resultsToBetOn);
 
 fprintf("\n\nHighest Prob only && Better Than Betters by results\n")
 [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = BTB_VariableStake(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
@@ -75,6 +81,6 @@ totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);
 
 fprintf("\n\nKelly Criterion lay results\n")
-[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, ourProbs, testY, highestBy, 0.01);
+[totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix, resultsToBetOn] = kellyCriterionLay(testBookieProbs, ourProbs, testY, highestBy, betterThanBookiesBy);
 totalReturn, totalSpent, profit, percentageProfit, numbBets
 analyseBets(resultsToBetOn);

@@ -27,14 +27,21 @@ function [totalReturn, totalSpent, profit, percentageProfit, numbBets, betMatrix
     endfor
     
     bookieProb = betProbs(row, lowestIndex);
-    if lowestProb + highestBy <= secondLowest && lowestProb - betterThanBookiesBy >= bookieProb
+    if lowestProb + highestBy <= secondLowest && lowestProb + betterThanBookiesBy <= bookieProb
       # do the kellyCriterion
       MAX_BET = 50;
       gainIfWin = 1/bookieProb - 1;
-      stake = MAX_BET * (1-lowestProb - (lowestProb*gainIfWin))/gainIfWin;
-      if stake < 0
-        stake = -stake;
+      #stake = MAX_BET * (1-lowestProb - (lowestProb*gainIfWin))/gainIfWin;
+      stake = MAX_BET * 1- (lowestProb + (lowestProb-1)/gainIfWin);
+      if stake > 0
+        #stake = -stake;
         liability = stake * 1/bookieProb;
+        multLimit50 = liability/50;
+        if multLimit50 > 1
+          stake /= multLimit50;
+          liability /= multLimit50;
+        endif
+        
         numbBets = numbBets + 1;
       
         if y(row) == lowestIndex
